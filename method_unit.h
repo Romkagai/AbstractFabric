@@ -26,6 +26,8 @@ public:
 
     void add(const std::shared_ptr <Unit> & unit, Flags /* flags */ = 0)
     {
+        // Попытка приведения указателя к типу ClassUnit или MethodUnit
+        // Когда указатель не удается привести - возвращается nullptr
         if (std::dynamic_pointer_cast<ClassUnit>(unit) == nullptr  &&       // не является объектом типа ClassUnit
             std::dynamic_pointer_cast<MethodUnit>(unit) == nullptr)         // не является объектом типа MethodUnit
         {
