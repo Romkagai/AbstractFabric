@@ -29,10 +29,10 @@ std::string generateProgramTest(std::shared_ptr<T> ProgrammFactory) {
     auto myClass = ProgrammFactory->MakeClass("TestClass");
 
     // Создаем функции
-    // Абстрактной финальной функции не может существовать (JAVA), а в С++ и С# таких определений нет.
+    // Абстрактной финальной функции не может существовать (JAVA), а в С++ и С# таких определений нет. Заметим это при выводе
     auto func1 = ProgrammFactory->MakeMethod("FunctionOne", "void", MethodUnit::FINAL | MethodUnit::ABSTRACT);
 
-    // В JAVA нет VIRTUAL, а в С++ и C# не бывает STATIC и VIRTUAL метода одновременно
+    // В JAVA нет VIRTUAL, а в С++ и C# не бывает STATIC и VIRTUAL метода одновременно. Заметим это при выводе
     auto func2 = ProgrammFactory->MakeMethod("FunctionTwo", "int", MethodUnit::VIRTUAL | MethodUnit::STATIC);
 
     // Создадим оператор вывода
@@ -43,27 +43,28 @@ std::string generateProgramTest(std::shared_ptr<T> ProgrammFactory) {
     // Просто вкладываем функции как положено
     myClass->add(func1, ClassUnit::PRIVATE_PROTECTED);
     myClass->add(func2, ClassUnit::PRIVATE);
+    // Просто вкладываем операторы печати как положено
     func1->add(print);
     func2->add(print2);
 
 
-    // Вкладываем класс в класс (создадим еще один)                 // Вложился, языки позволяют вкладывать класс в класс
-    //auto myClass2 = ProgrammFactory->MakeClass("TestClass2");       // Но нужна ли точная реализация под задачу?
+    // Вкладываем класс в класс (создадим еще один)                 // ClassUnit не позволяет вкладывать в класс что либо кроме методов
+    //auto myClass2 = ProgrammFactory->MakeClass("TestClass2");     // Ловим except
     //myClass->add(myClass2, ClassUnit::PUBLIC);
 
-    // Вкладываем оператор печати в класс
-    //myClass->add(print, ClassUnit::PUBLIC);                         // Вложился (не баг, а фича)
+    // Вкладываем оператор печати в класс                           // ClassUnit не позволяет вкладывать в класс что либо кроме методов
+    // myClass->add(print, ClassUnit::PUBLIC);                      // Ловим except
 
-    //Вкладываем класс в метод                                      // Программа ломается
-    //func2->add(myClass);
+    //Вкладываем класс в метод                                      // ClassMethod не позволяет вкладывать в себя классы и методы
+    //func2->add(myClass);                                          // Ловим except
 
-    //Вкладываем метод в метод                                      // Вложился (не баг, а фича)
-    //func2->add(func1);
+    //Вкладываем метод в метод                                      // ClassMethod не позволяет вкладывать в себя классы и методы
+    //func2->add(func1);                                            // Ловим except
 
-    //Вкладываем класс в оператор печати                            // Ловим error определенный в unit
+    //Вкладываем класс в оператор печати                            // Ловим except определенный в Unit по умолчанию
     //print->add(myClass, 0);
 
-    //Вкладываем оператор печати в оператор печати                  // Ловим error определенный в unit
+    //Вкладываем оператор печати в оператор печати                  // Ловим except определенный в Unit по умолчанию
     //print -> add(print,0);
 
     return myClass->compile();
@@ -90,19 +91,19 @@ int main()
 
 
     cout << "Programm from task on C++" << endl;
-    cout << generateProgramTest(std::make_shared<ProgrammFactoryCpp>());    // Код корректно генерируется, в соответствии с С++
+    cout << generateProgramTest(std::make_shared<ProgrammFactoryCpp>());            // Код корректно генерируется, в соответствии с С++
     cout << endl << "Press enter to continue";
     getchar(); system("cls");
 
-    cout << "Programm from task on C#" << endl;
-    cout << generateProgramTest(std::make_shared<ProgrammFactoryCSharp>());  // Код корректно генерируется, в соответствии с С#
-    cout << endl << "Press enter to continue";
-    getchar(); system("cls");
+//    cout << "Programm from task on C#" << endl;
+//    cout << generateProgramTest(std::make_shared<ProgrammFactoryCSharp>());       // Код корректно генерируется, в соответствии с С#
+//    cout << endl << "Press enter to continue";
+//    getchar(); system("cls");
 
-    cout << "Programm from task on Java" << endl;
-    cout << generateProgramTest(std::make_shared<ProgrammFactoryJava>());    // Код корректно генерируется, в соответствии с Java
-    cout << endl << "Press enter to continue";
-    getchar(); system("cls");
+//    cout << "Programm from task on Java" << endl;
+//    cout << generateProgramTest(std::make_shared<ProgrammFactoryJava>());         // Код корректно генерируется, в соответствии с Java
+//    cout << endl << "Press enter to continue";
+//    getchar(); system("cls");
 
     return 0;
 }
