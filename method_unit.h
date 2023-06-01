@@ -1,7 +1,10 @@
 #ifndef CLASS_METHOD_H
 #define CLASS_METHOD_H
 
+#include "class_unit.h"
 #include "unit.h"
+
+#include <QDebug>
 
 class MethodUnit: public Unit {
 
@@ -23,7 +26,14 @@ public:
 
     void add(const std::shared_ptr <Unit> & unit, Flags /* flags */ = 0)
     {
-        m_body.push_back(unit);
+        if (std::dynamic_pointer_cast<ClassUnit>(unit) == nullptr  &&       // не является объектом типа ClassUnit
+            std::dynamic_pointer_cast<MethodUnit>(unit) == nullptr)         // не является объектом типа MethodUnit
+        {
+            m_body.push_back(unit);}
+        else
+        {
+            throw std::runtime_error("Cannot include class (or method) into method");
+        }
     }
 
 protected:
