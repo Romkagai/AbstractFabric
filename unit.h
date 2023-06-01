@@ -1,8 +1,9 @@
 #ifndef UNIT_H
 #define UNIT_H
 
-#include <memory>   // Для пользования умным указателем
-#include <vector>   // Для создания объектов std::vector
+#include <memory>       // Для пользования умным указателем
+#include <stdexcept>    // Для вывода exception
+#include <vector>       // Для создания объектов std::vector
 
 class Unit {
 
