@@ -2,6 +2,7 @@
 #define CLASS_UNIT_JAVA_H
 
 #include "class_unit.h"
+#include "method_unit.h"
 
 class ClassUnitJava: public ClassUnit {
 public:
@@ -16,7 +17,12 @@ public:
     if (flags < ACCESS_MODIFIERS.size()) {                      // Если flags < длины вектора ACCESS_MODIFIERS
       accessModifier = flags;                                   // То ставим такой модификатор, как во flags
     }
-    m_fields[accessModifier].push_back(unit);                   // Указатель на Unit передается в вектор полей класса с данным модификатором
+    // Попытка приведения типа указателя unit к MethodUnit - если указатель не привелся, возвращается nullptr
+    // Приведение не удалось => unit это не MethodUnit включение невозможно
+    if (std::dynamic_pointer_cast<MethodUnit>(unit) == nullptr){
+      throw std::runtime_error( "Only methods can be included in classes" );
+    }
+    else {m_fields[accessModifier].push_back(unit); }           // Указатель на Unit передается в вектор полей класса с данным модификатором
   }
 
   std::string compile(unsigned int level = 0) const {
